@@ -1,0 +1,11 @@
+--- a/include/base/internal/cef_atomicops_x86_msvc.h	2015-12-07 13:31:24 +0300
++++ b/include/base/internal/cef_atomicops_x86_msvc.h	2015-12-16 11:48:01 +0300
+@@ -81,7 +81,7 @@
+   return Barrier_AtomicIncrement(ptr, increment);
+ }
+ 
+-#if !(defined(_MSC_VER) && _MSC_VER >= 1400)
++#if !(defined(_MSC_VER) && _MSC_VER >= 1400) && !defined(__MINGW32__)
+ #error "We require at least vs2005 for MemoryBarrier"
+ #endif
+ inline void MemoryBarrier() {
