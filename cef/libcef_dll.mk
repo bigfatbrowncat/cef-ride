@@ -1,7 +1,23 @@
+UNAME := $(shell uname)
+
+ifndef ARCH
+  ARCH := $(shell uname -m)
+endif
+
+ifeq ($(UNAME), Darwin)							# OS X
+    PLATFORM=darwin
+else ifeq ($(UNAME), Linux)						# linux on PC
+	PLATFORM=linux
+else ifeq ($(OS) $(ARCH), Windows_NT i686)		# Windows 32
+	PLATFORM=windows
+else ifeq ($(OS) $(ARCH), Windows_NT x86_64)	# Windows 64
+	PLATFORM=windows
+endif
+
         CXX := g++
         CC := gcc
         AS := as
-        AR := gcc-ar
+        AR := ar
         OPT ?= -ggdb3 -O2
 MAKEDEPEND = -MP -MD -MF $(patsubst %.o,%.d,$(OBJDIR).deps/$(@F))
   WARNINGS := -Wall -W -Winline -Wshadow -Wstrict-overflow=5 -Wno-shadow -Wno-unused-parameter #-Werror #-Wno-error=strict-aliasing
@@ -44,7 +60,9 @@ OBJDEPS := $(OBJS:%.o=$(OBJDIR).deps/%.d) $(LIBUTIL_OBJS:$(OBJDIR)%.o=$(OBJDIR).
 override OBJS := $(OBJS:%=$(OBJDIR)%)
 override DEPENDS := $(DEPENDS:%=$(OBJDIR)%)
 
-override CFLAGS += -mms-bitfields -DUNICODE -DMINGW_HAS_SECURE_API=1
+ifeq ($(PLATFORM), windows)
+    override CFLAGS += -mms-bitfields -DUNICODE -DMINGW_HAS_SECURE_API=1
+endif
 
 $(OBJDIR)%.o: $(srcdir)%.c
 	$(CC) $(CFLAGS) $(WARNINGS) $(INCLUDES) $(MAKEDEPEND) -c $< -o $@
