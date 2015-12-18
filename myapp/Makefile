@@ -41,13 +41,17 @@ CEF_BINARY_PATH = $(CEF_ROOT)/binary/$(PLATFORM)-$(ARCH)/Release/
 CEF_ROOT := ../cef
 CEF_STATIC_LIB_PATH := $(CEF_ROOT)/target-libcef_dll
 
+ifeq ($(PLATFORM), darwin)
+    OBJS := cefsimple_mac.o simple_app.o simple_handler.o simple_handler_mac.o
+else ifeq ($(PLATFORM), windows)
+    OBJS := cefsimple_win.o simple_app.o simple_handler.o simple_handler_win.o
+endif
 
 CC := gcc
 CXX := g++
 srcdir := ./
 OBJDIR := target/
 RESDIR := target/deploy/
-OBJS := cefsimple_mac.o simple_app.o simple_handler.o simple_handler_mac.o
 
 INCLUDES := -I$(CEF_ROOT) -I$(srcdir)../
 WARNINGS := -Wall -W -Winline -Wshadow -Wstrict-overflow=5 -Wno-shadow -Wno-unused-parameter
@@ -72,8 +76,9 @@ cefres:
 else
 
 cefres:
+	mkdir -p $(RESDIR)
 	cp -rf $(CEF_ROOT)/Resources/* $(RESDIR)
-	cp -rf $(CEF_BINARY_PATH)/*.bin $(CEF_BINARY_PATH)/*.dll $(RESDIR)
+	cp -rf $(CEF_BINARY_PATH)*.bin $(CEF_BINARY_PATH)*.dll $(RESDIR)
 
 endif
 
