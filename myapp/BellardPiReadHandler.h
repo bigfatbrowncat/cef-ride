@@ -23,12 +23,14 @@ class BellardPiReadHandler : public CefReadHandler
 {
 private:
 	int n;
+	CefString str;
 
 	CefRefPtr<CefByteReadHandler> resultByteReadHandler = NULL;
 	void checkResult();
 
 public:
-	BellardPiReadHandler(int n): n(n) { }
+	BellardPiReadHandler(int n): n(n) {
+	}
 
 	  ///
 	  // Read raw binary data.

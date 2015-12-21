@@ -78,7 +78,7 @@ void SimpleApp::OnContextCreated(CefRefPtr<CefBrowser> browser,
                               CefRefPtr<CefV8Context> context) {
 
 	context->GetGlobal()->CreateFunction("showDevTools", new DevToolsCefV8Handler(browser, this, handler));
-	browser->GetHost()->ShowDevTools(CefWindowInfo(), handler, GetBrowserSettings(), CefPoint());
+	//browser->GetHost()->ShowDevTools(CefWindowInfo(), handler, GetBrowserSettings(), CefPoint());
 }
 
 

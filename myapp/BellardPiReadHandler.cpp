@@ -16,7 +16,7 @@ void BellardPiReadHandler::checkResult() {
 
 		  sprintf(digitStr, "%09d", piDigit);
 
-		  CefString str(digitStr);
+		  str = CefString(digitStr);
 		  int length = str.size() * sizeof(CefString::char_type);
 		  resultByteReadHandler = new CefByteReadHandler((unsigned char*)str.c_str(), length, CefRefPtr<CefBase>(this));
 	  }

@@ -13,8 +13,7 @@
 CefRefPtr<CefResourceHandler> LocalSchemeHandlerFactory::Create(CefRefPtr<CefBrowser> browser,
 										   CefRefPtr<CefFrame> frame,
 										   const CefString& scheme_name,
-										   CefRefPtr<CefRequest> request)
-										   OVERRIDE {
+										   CefRefPtr<CefRequest> request) {
 // Return a new resource handler instance to handle the request.
 //return new MyResourceHandler();
 
@@ -32,7 +31,7 @@ CefRefPtr<CefResourceHandler> LocalSchemeHandlerFactory::Create(CefRefPtr<CefBro
 	  return new CefStreamResourceHandler("text/html", stream);
   } else if (requestPath == "/api/pi_digit") {
 
-	  int n = _wtoi(requestQuery.c_str());
+	  int n = stoi(requestQuery.ToString());
 
 	  /*int piDigit = getPiDigit(n);
 
