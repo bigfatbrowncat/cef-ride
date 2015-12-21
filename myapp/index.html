@@ -38,10 +38,15 @@
       	helloTag = document.getElementById("helloTag");
         digitIndex = 1;
         loadDoc('local://myapp/api/pi_digit?1', helloHandler);
-        //showDevTools();
+        window.showDevTools();
       });
     </script>
     
+    
+    <script language="JavaScript">
+alert(window.myval); // Shows an alert box with "My Value!"
+</script>
+
     <title>Pi calculator</title>
   </head>
   <body>

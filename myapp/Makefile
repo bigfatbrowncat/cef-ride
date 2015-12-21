@@ -62,11 +62,9 @@ TARGET := cefsimple
 
 OBJS := $(OBJS:%=$(OBJDIR)%)
 
-all : $(RESDIR)$(RES_TARGET_PATH)$(TARGET)$(EXT) cefres myres
+all : $(RESDIR)$(RES_TARGET_PATH)$(TARGET)$(EXT) cefres
 
 ifeq ($(PLATFORM), darwin)
-
-myres:
 
 cefres:
 	mkdir -p $(RESDIR)
@@ -76,18 +74,18 @@ cefres:
 
 else
 
-myres: $(RESDIR)/index.html
-
 cefres:
 	mkdir -p $(RESDIR)
 	cp -rf $(CEF_ROOT)/Resources/* $(RESDIR)
 	cp -rf $(CEF_BINARY_PATH)*.bin $(CEF_BINARY_PATH)*.dll $(RESDIR)
 
-$(RESDIR)index.html: $(srcdir)index.html
-	mkdir -p $(RESDIR)
-	cp -f $< $@
-
 endif
+
+generated: $(OBJDIR)index.html.h
+
+$(OBJDIR)index.html.h: $(srcdir)index.html
+	mkdir -p $(OBJDIR)
+	xxd -i $(srcdir)index.html $(OBJDIR)index.html.h
 
 $(RESDIR)$(RES_TARGET_PATH)$(TARGET)$(EXT) : $(OBJDIR)$(TARGET).long$(EXT)
 	mkdir -p $(RESDIR)$(RES_TARGET_PATH)
@@ -108,18 +106,18 @@ $(LINKED_RES): $(srcdir)cefsimple.rc $(srcdir)/res/win/cefsimple.ico
 	$(WINDRES) -I$(srcdir) -i $(srcdir)cefsimple.rc -o $@
 endif
 
-$(OBJDIR)%.o: $(srcdir)%.c
+$(OBJDIR)%.o: $(srcdir)%.c generated
 	mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) $(WARNINGS) $(INCLUDES) -c $< -o $@
 
-$(OBJDIR)%.o: $(srcdir)%.mm
+$(OBJDIR)%.o: $(srcdir)%.mm generated
 	mkdir -p $(OBJDIR)
 	$(CXX) $(CFLAGS) $(WARNINGS) $(INCLUDES) -c $< -o $@
 
-$(OBJDIR)%.o: $(srcdir)%.cc
+$(OBJDIR)%.o: $(srcdir)%.cc generated
 	mkdir -p $(OBJDIR)
 	$(CXX) $(CXXFLAGS) $(WARNINGS) $(INCLUDES) -c $< -o $@
 
-$(OBJDIR)%.o: $(srcdir)%.cpp
+$(OBJDIR)%.o: $(srcdir)%.cpp generated
 	mkdir -p $(OBJDIR)
 	$(CXX) $(CXXFLAGS) $(WARNINGS) $(INCLUDES) -c $< -o $@

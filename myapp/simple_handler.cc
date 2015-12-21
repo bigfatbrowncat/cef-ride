@@ -109,3 +109,57 @@ void SimpleHandler::CloseAllBrowsers(bool force_close) {
   for (; it != browser_list_.end(); ++it)
     (*it)->GetHost()->CloseBrowser(force_close);
 }
+
+void SimpleHandler::ShowDevTools(CefRefPtr<CefBrowser> browser) {
+  CefWindowInfo windowInfo;
+  CefBrowserSettings settings;
+  CefPoint pt;
+#if defined(OS_WIN)
+  windowInfo.SetAsPopup(browser->GetHost()->GetWindowHandle(), "DevTools");
+#endif
+
+  browser->GetHost()->ShowDevTools(windowInfo, this, settings, pt);
+}
+
+void SimpleHandler::CloseDevTools(CefRefPtr<CefBrowser> browser) {
+  browser->GetHost()->CloseDevTools();
+}
+
+#define CLIENT_ID_SHOW_DEVTOOLS 	1001
+#define CLIENT_ID_CLOSE_DEVTOOLS 	1002
+
+void SimpleHandler::OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
+                                 CefRefPtr<CefFrame> frame,
+                                 CefRefPtr<CefContextMenuParams> params,
+                                 CefRefPtr<CefMenuModel> model) {
+
+  if ((params->GetTypeFlags() & (CM_TYPEFLAG_PAGE | CM_TYPEFLAG_FRAME)) != 0) {
+	// Add a separator if the menu already has items.
+	if (model->GetCount() > 0)
+	  model->AddSeparator();
+
+	// Add DevTools items to all context menus.
+	model->AddItem(CLIENT_ID_SHOW_DEVTOOLS, "&Show DevTools");
+	model->AddItem(CLIENT_ID_CLOSE_DEVTOOLS, "Close DevTools");
+  }
+
+}
+
+bool SimpleHandler::OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
+                                  CefRefPtr<CefFrame> frame,
+                                  CefRefPtr<CefContextMenuParams> params,
+                                  int command_id,
+                                  EventFlags event_flags) {
+  switch (command_id) {
+	case CLIENT_ID_SHOW_DEVTOOLS:
+	  ShowDevTools(browser);
+	  return true;
+	case CLIENT_ID_CLOSE_DEVTOOLS:
+	  CloseDevTools(browser);
+	  return true;
+	default:  // Allow default handling, if any.
+	  return false;
+  }
+
+}
+

@@ -51,33 +51,42 @@ void SimpleApp::OnContextInitialized() {
                                 browser_settings, NULL);
 }
 
-class DevToolsCefV8Handler : public CefV8Handler {
-	CefRefPtr<CefBrowser> browser;
-	CefRefPtr<SimpleApp> app;
-	CefRefPtr<SimpleHandler> client;
-public:
-	  virtual bool Execute(const CefString& name,
-	                       CefRefPtr<CefV8Value> object,
-	                       const CefV8ValueList& arguments,
-	                       CefRefPtr<CefV8Value>& retval,
-	                       CefString& exception) {
-		  if (name == "showDevTools") {
-			  browser->GetHost()->ShowDevTools(CefWindowInfo(), client, app->GetBrowserSettings(), CefPoint());
-			  return true;
-		  }
-		  return false;
-	  }
-	  DevToolsCefV8Handler(CefRefPtr<CefBrowser> browser, CefRefPtr<SimpleApp> app, CefRefPtr<SimpleHandler> client) : browser(browser), app(app), client(client) {}
 
-	  IMPLEMENT_REFCOUNTING(DevToolsCefV8Handler);
-};
+bool DevToolsCefV8Handler::Execute(const CefString& name,
+                     CefRefPtr<CefV8Value> object,
+                     const CefV8ValueList& arguments,
+                     CefRefPtr<CefV8Value>& retval,
+                     CefString& exception) {
+	  if (name == "showDevTools") {
+		  printf("showDevTols function called\n");fflush(stdout);
+
+		  //app->GetHandler()->ShowDevTools(browser);
+		  return true;
+	  }
+	  return false;
+}
+
 
 void SimpleApp::OnContextCreated(CefRefPtr<CefBrowser> browser,
                               CefRefPtr<CefFrame> frame,
                               CefRefPtr<CefV8Context> context) {
 
-	context->GetGlobal()->CreateFunction("showDevTools", new DevToolsCefV8Handler(browser, this, handler));
-	//browser->GetHost()->ShowDevTools(CefWindowInfo(), handler, GetBrowserSettings(), CefPoint());
+	//devToolsHandler = new DevToolsCefV8Handler(browser, this);
+	//CefRefPtr<CefV8Value> showDevTools_jsfunc = context->GetGlobal()->CreateFunction("showDevTools", devToolsHandler);
+	//context->GetGlobal()->SetValue("showDevTools", showDevTools_jsfunc, V8_PROPERTY_ATTRIBUTE_READONLY);
+
+	printf("showDevTols function created\n");fflush(stdout);
+
+/*
+	  CefRefPtr<CefV8Value> object = context->GetGlobal();
+
+	  // Create a new V8 string value. See the "Basic JS Types" section below.
+	  CefRefPtr<CefV8Value> str = CefV8Value::CreateString("My Value!");
+
+	  // Add the string to the window object as "window.myval". See the "JS Objects" section below.
+	  object->SetValue("myval", str, V8_PROPERTY_ATTRIBUTE_NONE);*/
+
+	//browser->GetHost()->ShowDevTools(window_info, handler, GetBrowserSettings(), *(new CefPoint()));
 }
 
 

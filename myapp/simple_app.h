@@ -9,6 +9,22 @@
 
 #include "include/cef_app.h"
 
+class SimpleApp;
+
+class DevToolsCefV8Handler : public CefV8Handler {
+	CefRefPtr<CefBrowser> browser;
+	CefRefPtr<SimpleApp> app;
+public:
+	  virtual bool Execute(const CefString& name,
+	                       CefRefPtr<CefV8Value> object,
+	                       const CefV8ValueList& arguments,
+	                       CefRefPtr<CefV8Value>& retval,
+	                       CefString& exception) OVERRIDE;
+	  DevToolsCefV8Handler(CefRefPtr<CefBrowser> browser, CefRefPtr<SimpleApp> app) : browser(browser), app(app) {}
+private:
+	  IMPLEMENT_REFCOUNTING(DevToolsCefV8Handler);
+};
+
 // Implement application-level callbacks for the browser process.
 class SimpleApp : public CefApp,
                   public CefBrowserProcessHandler,
@@ -17,6 +33,7 @@ class SimpleApp : public CefApp,
 	CefBrowserSettings browser_settings;
 	CefWindowInfo window_info;
 
+	CefRefPtr<DevToolsCefV8Handler> devToolsHandler;
 public:
   SimpleApp();
 
@@ -37,9 +54,18 @@ public:
                                 CefRefPtr<CefFrame> frame,
                                 CefRefPtr<CefV8Context> context);
 
+  CefRefPtr<SimpleHandler> GetHandler() {
+	  return handler;
+  }
+
   const CefBrowserSettings& GetBrowserSettings() {
 	  return browser_settings;
   }
+
+  const CefWindowInfo& GetWindowInfo() {
+	  return window_info;
+  }
+
 
  private:
   // Include the default reference counting implementation.

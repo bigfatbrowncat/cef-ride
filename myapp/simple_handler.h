@@ -12,7 +12,8 @@
 class SimpleHandler : public CefClient,
                       public CefDisplayHandler,
                       public CefLifeSpanHandler,
-                      public CefLoadHandler {
+                      public CefLoadHandler,
+					  public CefContextMenuHandler {
  public:
   SimpleHandler();
   ~SimpleHandler();
@@ -28,6 +29,9 @@ class SimpleHandler : public CefClient,
     return this;
   }
   virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE {
+    return this;
+  }
+  virtual CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() OVERRIDE {
     return this;
   }
 
@@ -51,6 +55,22 @@ class SimpleHandler : public CefClient,
   void CloseAllBrowsers(bool force_close);
 
   bool IsClosing() const { return is_closing_; }
+
+  void ShowDevTools(CefRefPtr<CefBrowser> browser);
+  void CloseDevTools(CefRefPtr<CefBrowser> browser);
+
+
+  virtual void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
+                                   CefRefPtr<CefFrame> frame,
+                                   CefRefPtr<CefContextMenuParams> params,
+                                   CefRefPtr<CefMenuModel> model) OVERRIDE;
+
+  virtual bool OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
+                                    CefRefPtr<CefFrame> frame,
+                                    CefRefPtr<CefContextMenuParams> params,
+                                    int command_id,
+                                    EventFlags event_flags) OVERRIDE;
+
 
  private:
   // List of existing browser windows. Only accessed on the CEF UI thread.

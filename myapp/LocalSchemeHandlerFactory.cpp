@@ -10,6 +10,8 @@
 #include "LocalSchemeHandlerFactory.h"
 #include "BellardPiReadHandler.h"
 
+#include "target/index.html.h"
+
 CefRefPtr<CefResourceHandler> LocalSchemeHandlerFactory::Create(CefRefPtr<CefBrowser> browser,
 										   CefRefPtr<CefFrame> frame,
 										   const CefString& scheme_name,
@@ -24,7 +26,12 @@ CefRefPtr<CefResourceHandler> LocalSchemeHandlerFactory::Create(CefRefPtr<CefBro
   CefString requestQuery(&parts.query);
 
   if (requestPath == "/") {
-	  CefRefPtr<CefStreamReader> stream = CefStreamReader::CreateForFile("index.html");
+	  //CefRefPtr<CefStreamReader> stream = CefStreamReader::CreateForFile("index.html");
+	  // Create a stream reader for |html_content|.
+	  CefRefPtr<CefStreamReader> stream =
+		  CefStreamReader::CreateForData(
+			  static_cast<void*>(__index_html),
+			  __index_html_len);
 
 	  // Constructor for HTTP status code 200 and no custom response headers.
 	  // There’s also a version of the constructor for custom status code and response headers.

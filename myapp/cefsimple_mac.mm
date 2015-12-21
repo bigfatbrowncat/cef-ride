@@ -124,6 +124,7 @@ int main(int argc, char* argv[]) {
   // Specify CEF global settings here.
   CefSettings settings;
   settings.single_process = 1;
+  settings.background_color = CefColorSetARGB(255, 0x22, 0x28, 0x33);
 
   // Initialize CEF for the browser process.
   CefInitialize(main_args, settings, app.get(), NULL);
