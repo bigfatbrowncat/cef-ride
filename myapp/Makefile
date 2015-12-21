@@ -19,7 +19,7 @@ else ifeq ($(UNAME), Linux)						# linux on PC
 else ifeq ($(OS) $(ARCH), Windows_NT i686)		# Windows 32
 	PLATFORM=windows
 	EXT = .exe
-	LDFLAGS = -mwindows -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic \
+	LDFLAGS = -mwindows -mconsole -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic \
                -L$(CEF_BINARY_PATH) -lcef -L$(CEF_STATIC_LIB_PATH) -lcef_dll \
                -DUNICODE
     RES_TARGET_PATH = 
@@ -42,9 +42,9 @@ CEF_ROOT := ../cef
 CEF_STATIC_LIB_PATH := $(CEF_ROOT)/target-libcef_dll
 
 ifeq ($(PLATFORM), darwin)
-    OBJS := cefsimple_mac.o simple_app.o simple_handler.o simple_handler_mac.o
+    OBJS := cefsimple_mac.o simple_app.o simple_handler.o simple_handler_mac.o LocalSchemeHandlerFactory.o BellardPiReadHandler.o bellard_pi.o
 else ifeq ($(PLATFORM), windows)
-    OBJS := cefsimple_win.o simple_app.o simple_handler.o simple_handler_win.o
+    OBJS := cefsimple_win.o simple_app.o simple_handler.o simple_handler_win.o LocalSchemeHandlerFactory.o BellardPiReadHandler.o bellard_pi.o
 endif
 
 CC := gcc
@@ -55,15 +55,14 @@ RESDIR := target/deploy/
 
 INCLUDES := -I$(CEF_ROOT) -I$(srcdir)../
 WARNINGS := -Wall -W -Winline -Wshadow -Wstrict-overflow=5 -Wno-shadow -Wno-unused-parameter
-CFLAGS := -O2 -g0
+CFLAGS := -O0 -g2
 CXXFLAGS := $(CFLAGS) -fpermissive
 
 TARGET := cefsimple
 
-override OBJS := $(OBJS:%=$(OBJDIR)%)
+OBJS := $(OBJS:%=$(OBJDIR)%)
 
-
-all : cefres $(RESDIR)$(RES_TARGET_PATH)$(TARGET)$(EXT)
+all : $(RESDIR)$(RES_TARGET_PATH)$(TARGET)$(EXT) cefres
 
 ifeq ($(PLATFORM), darwin)
 

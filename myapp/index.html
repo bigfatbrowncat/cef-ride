@@ -1,0 +1,50 @@
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body { background: #222222; color: #ddddcc; margin: 20pt; margin-top: 10pt; }
+    </style>
+    
+    <script>
+      var digitIndex = 1;
+    
+      function loadDoc(addr, handler) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4) {
+            if (xhttp.status == 200) {
+              handler(xhttp.responseText, true);
+            } else {
+              handler(null, false);
+            }
+          }
+        };
+        xhttp.open("GET", addr, true);
+        xhttp.send();
+      }
+    
+      function helloHandler(val, success) { 
+        if (success) {
+        	digitIndex = digitIndex + 9;
+            helloTag.innerHTML = helloTag.innerHTML + val;
+        } else {
+			//alert("!!!");
+        }
+        loadDoc('local://myapp/api/pi_digit?' + digitIndex, helloHandler);
+      }
+      
+      window.addEventListener("load", function() {
+      	helloTag = document.getElementById("helloTag");
+        digitIndex = 1;
+        loadDoc('local://myapp/api/pi_digit?1', helloHandler);
+        //showDevTools();
+      });
+    </script>
+    
+    <title>Pi calculator</title>
+  </head>
+  <body>
+    <span id="helloTag" style="word-wrap: break-word;"><span style="font-size: 200%; color: #ffffff;">π</span><span style="font-size: 125%;">&nbsp;=&nbsp;3.</span></span><span style="color: #ffffff;">▪▪▪</span>
+  </body>
+</html>
