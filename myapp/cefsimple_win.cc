@@ -55,6 +55,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
   // Specify CEF global settings here.
   CefSettings settings;
+  settings.background_color = CefColorSetARGB(255, 0x22, 0x28, 0x33);
 
 #if !defined(CEF_USE_SANDBOX)
   settings.no_sandbox = true;

@@ -20,7 +20,6 @@ void SimpleApp::OnContextInitialized() {
   CEF_REQUIRE_UI_THREAD();
 
   // Information used when creating the native window.
-  CefWindowInfo window_info;
 
 #if defined(OS_WIN)
   // On Windows we need to specify certain flags that will be passed to

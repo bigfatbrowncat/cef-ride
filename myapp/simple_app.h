@@ -15,6 +15,8 @@ class SimpleApp : public CefApp,
 				  public CefRenderProcessHandler {
 	CefRefPtr<SimpleHandler> handler;
 	CefBrowserSettings browser_settings;
+	CefWindowInfo window_info;
+
 public:
   SimpleApp();
 

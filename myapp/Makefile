@@ -55,16 +55,18 @@ RESDIR := target/deploy/
 
 INCLUDES := -I$(CEF_ROOT) -I$(srcdir)../
 WARNINGS := -Wall -W -Winline -Wshadow -Wstrict-overflow=5 -Wno-shadow -Wno-unused-parameter
-CFLAGS := -O0 -g2
+CFLAGS := -O0 -g2 -std=c++0x
 CXXFLAGS := $(CFLAGS) -fpermissive
 
 TARGET := cefsimple
 
 OBJS := $(OBJS:%=$(OBJDIR)%)
 
-all : $(RESDIR)$(RES_TARGET_PATH)$(TARGET)$(EXT) cefres
+all : $(RESDIR)$(RES_TARGET_PATH)$(TARGET)$(EXT) cefres myres
 
 ifeq ($(PLATFORM), darwin)
+
+myres:
 
 cefres:
 	mkdir -p $(RESDIR)
@@ -74,10 +76,16 @@ cefres:
 
 else
 
+myres: $(RESDIR)/index.html
+
 cefres:
 	mkdir -p $(RESDIR)
 	cp -rf $(CEF_ROOT)/Resources/* $(RESDIR)
 	cp -rf $(CEF_BINARY_PATH)*.bin $(CEF_BINARY_PATH)*.dll $(RESDIR)
+
+$(RESDIR)index.html: $(srcdir)index.html
+	mkdir -p $(RESDIR)
+	cp -f $< $@
 
 endif
 
